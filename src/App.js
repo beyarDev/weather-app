@@ -11,10 +11,11 @@ function App() {
   const [weather, setweather] = useState({});
   const [error, seterror] = useState(null);
   const [isloaded, setIsLoaded] = useState(false);
+  const [homeCity, setHomeCity] = useState('Qamishli')
 
   useEffect(() => {
     fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=Qamishli&units=metric&appid=${process.env.REACT_APP_APIKEY}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${homeCity}&units=metric&appid=${process.env.REACT_APP_APIKEY}`
     )
       .then((respone) => respone.json())
       .then(
@@ -28,7 +29,7 @@ function App() {
           seterror(error);
         }
       );
-  }, []);
+  }, [homeCity]);
 
   const search = (e) => {
     if (e.key === "Enter") {
@@ -49,6 +50,29 @@ function App() {
         );
     }
   };
+  async function sucessfulLockup(postion) {
+    const latitude = postion.coords.latitude;
+    const longitude = postion.coords.longitude;
+    console.log(latitude);
+    console.log(longitude);
+    try {
+      const getLcation = await fetch(
+        `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${process.env.REACT_APP_OPENCAGEAPIKEY}`
+      );
+      const currentLocation = await getLcation.json();
+      console.log(currentLocation.results[0].components.city);
+      setHomeCity(currentLocation.results[0].components.city)
+    } catch {
+      console.log();
+    }
+  }
+  function errorcallback(error) {
+    console.log(error);
+  }
+  function handleLocation() {
+    navigator.geolocation.getCurrentPosition(sucessfulLockup, errorcallback);
+  }
+
   var appBackground =
     "url('https://www.weather2travel.com/images_content/sunshine-hours-where-and-when-is-it-sunniest.jpg')";
   if (typeof weather.main !== "undefined") {
@@ -97,7 +121,9 @@ function App() {
             onKeyPress={(e) => search(e)}
             placeholder="Search.."
           />
-          <HiOutlineLocationMarker className="icon location-icon" />
+          <button onClick={handleLocation}>
+            <HiOutlineLocationMarker className="icon location-icon" />
+          </button>
         </div>
         {weather.main && (
           <div className="container" style={{ background: `${appBackground}` }}>

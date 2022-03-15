@@ -33,6 +33,12 @@
   border-radius: 20px;
 }
 
+button {
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
 input {
   border: none;
   outline: none;
@@ -76,10 +82,10 @@ i {
   align-items: center;
 }
 .wellcome {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    height: 700px;
-    font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 700px;
+  font-size: 2rem;
 }
