@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=london&units=metric&appid=${process.env.REACT_APP_APIKEY}`
+      `https://api.openweathermap.org/data/2.5/weather?q=Qamishli&units=metric&appid=${process.env.REACT_APP_APIKEY}`
     )
       .then((respone) => respone.json())
       .then(
