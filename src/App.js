@@ -121,7 +121,7 @@ function App() {
   }
 
   if (error) {
-    return <div>Error:{error.message}</div>;
+    return <div className="error-message">Error:{error.message}</div>;
   } else if (!isloaded) {
     return (
       <div className="loading">
