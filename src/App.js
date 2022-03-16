@@ -51,6 +51,28 @@ function App() {
         });
     }
   };
+  function handleSearch(e) {
+    e.preventDefault();
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${process.env.REACT_APP_APIKEY}`
+    )
+      .then((respones) => {
+        if (!respones.ok) {
+          throw Error("could not find city");
+        }
+        return respones.json();
+      })
+      .then((data) => {
+        setIsLoaded(true);
+        setweather(data);
+        setquery("");
+      })
+      .catch((error) => {
+        setIsLoaded(true);
+        seterror(error);
+      });
+  }
+
   async function sucessfulLockup(postion) {
     const latitude = postion.coords.latitude;
     const longitude = postion.coords.longitude;
@@ -116,7 +138,9 @@ function App() {
     return (
       <div className="app" style={{ color: `${dark}` }}>
         <div className="search-bar">
-          <FaSearch className="icon search-icon" />
+          <button onClick={handleSearch}>
+            <FaSearch className="icon search-icon" />
+          </button>
           <input
             type="text"
             onChange={(e) => setquery(e.target.value)}
