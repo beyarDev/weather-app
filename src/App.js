@@ -9,26 +9,24 @@ import ReactLoading from "react-loading";
 function App() {
   const [query, setquery] = useState("");
   const [weather, setweather] = useState({});
-  const [error, seterror] = useState(null);
+  const [error, seterror] = useState();
   const [isloaded, setIsLoaded] = useState(false);
-  const [homeCity, setHomeCity] = useState('Qamishli')
+  const [homeCity, setHomeCity] = useState("Qamishli");
 
   useEffect(() => {
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${homeCity}&units=metric&appid=${process.env.REACT_APP_APIKEY}`
     )
-      .then((respone) => respone.json())
-      .then(
-        (data) => {
-          setIsLoaded(true);
-          setweather(data);
-          setquery("");
-        },
-        (error) => {
-          setIsLoaded(true);
-          seterror(error);
-        }
-      );
+      .then((respones) => respones.json())
+      .then((data) => {
+        setIsLoaded(true);
+        setweather(data);
+        setquery("");
+      })
+      .catch((error) => {
+        setIsLoaded(true);
+        seterror(error);
+      });
   }, [homeCity]);
 
   const search = (e) => {
@@ -36,18 +34,21 @@ function App() {
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${process.env.REACT_APP_APIKEY}`
       )
-        .then((respone) => respone.json())
-        .then(
-          (data) => {
-            setIsLoaded(true);
-            setweather(data);
-            setquery("");
-          },
-          (error) => {
-            setIsLoaded(true);
-            seterror(error);
+        .then((respones) => {
+          if (!respones.ok) {
+            throw Error("could not find city");
           }
-        );
+          return respones.json();
+        })
+        .then((data) => {
+          setIsLoaded(true);
+          setweather(data);
+          setquery("");
+        })
+        .catch((error) => {
+          setIsLoaded(true);
+          seterror(error);
+        });
     }
   };
   async function sucessfulLockup(postion) {
@@ -61,13 +62,13 @@ function App() {
       );
       const currentLocation = await getLcation.json();
       console.log(currentLocation.results[0].components.city);
-      setHomeCity(currentLocation.results[0].components.city)
+      setHomeCity(currentLocation.results[0].components.city);
     } catch {
       console.log();
     }
   }
   function errorcallback(error) {
-    console.log(error);
+    seterror(error);
   }
   function handleLocation() {
     navigator.geolocation.getCurrentPosition(sucessfulLockup, errorcallback);
@@ -88,6 +89,7 @@ function App() {
       case "Snow":
         appBackground =
           "url('https://st2.depositphotos.com/1363168/9872/i/950/depositphotos_98723840-stock-photo-winter-background-with-snowy-weather.jpg')";
+        break;
       default:
     }
   }
