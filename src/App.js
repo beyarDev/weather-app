@@ -121,7 +121,7 @@ function App() {
   }
 
   if (error) {
-    return <div className="error-message">Error:{error.message}</div>;
+    return <div className="error-message">Error:{error.message}<p>please reload the page</p></div>;
   } else if (!isloaded) {
     return (
       <div className="loading">
@@ -146,6 +146,7 @@ function App() {
             onChange={(e) => setquery(e.target.value)}
             onKeyPress={(e) => search(e)}
             placeholder="Search.."
+            value={query}
           />
           <button onClick={handleLocation}>
             <HiOutlineLocationMarker className="icon location-icon" />
